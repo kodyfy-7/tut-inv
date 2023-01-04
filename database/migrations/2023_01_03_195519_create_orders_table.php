@@ -16,11 +16,19 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->uuid('transaction_id')->unique()->index()->default(DB::raw('uuid_generate_v4()'));
-            $table->integer('user_id');
+            $table->uuid('transaction_id')->unique()->index();
+            $table->unsignedBigInteger('user_id')->nullable();
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->decimal('total', 8, 2);
             $table->timestamps();
         });
+        
+        DB::unprepared('CREATE TRIGGER orders_before_insert
+        BEFORE INSERT ON orders
+        FOR EACH ROW
+        BEGIN
+          SET NEW.transaction_id = UUID();
+        END;');
     }
 
     /**
