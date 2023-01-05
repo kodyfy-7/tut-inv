@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\RegisterRequest;
 use App\Models\Role;
 use App\Models\Supplier;
 use App\Models\User;
@@ -31,20 +32,8 @@ class AuthController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(RegisterRequest $request)
     {
-        $validated = Validator::make($request->all(), [
-            'type' => 'required|in:customer,vendor',
-            'email' => 'required',
-            'password' => 'required',
-            'name' => 'required',
-            'phone' => 'required'
-        ]);
-        
-        if ($validated->fails()) {
-            return response()->json(['error' => $validated->errors()->all()]);
-        }
-
         $role = Role::where('slug', $request->type)->first();
         DB::beginTransaction();
         try {
