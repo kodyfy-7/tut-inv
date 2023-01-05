@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Models\Role;
 use App\Models\Supplier;
@@ -13,21 +14,29 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Illuminate\Http\JsonResponse;
 
 class AuthController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Logins the user.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(LoginRequest $request)
     {
-        //
+        $user = User::with('role')->where('email', $request->email)->first();
+        if (! $user || ! Hash::check($request->password, $user->password)) {
+            return response(['error' => 'invalid credentials'], 401);
+        }
+
+        $user->token = $user->createToken('tut-inv-token')->plainTextToken;
+
+        return response(['data' => $user], 200);
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created user in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response

@@ -22,16 +22,16 @@ class UserSeeder extends Seeder {
         Schema::enableForeignKeyConstraints();
 
         $user = User::create([
-            'username' => 'vendor1',
-            'email' => 'one@vendor.com',
+            'username' => 'admin1',
+            'email' => 'one@admin.com',
             'password' => Hash::make('password'),
-            'role_id' => 1,
+            'role_id' => 3,
         ]);
 
-        Supplier::create([
-            'user_id' => $user->id,
-            'name' => 'Vendor',
-            'phone' => '0909090909'
-        ]);
+        // Supplier::create([
+        //     'user_id' => $user->id,
+        //     'name' => 'Vendor',
+        //     'phone' => '0909090909'
+        // ]);
     }
 }
