@@ -30,7 +30,9 @@ class AuthController extends Controller
             return response(['error' => 'invalid credentials'], 401);
         }
 
-        $user->token = $user->createToken('tut-inv-token')->plainTextToken;
+        //$role = collect($user->role->slug);
+        $role = array($user->role->slug);
+        $user->token = $user->createToken('tut-inv-token', $role)->plainTextToken;
 
         return response(['data' => $user], 200);
     }
